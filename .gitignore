@@ -8,3 +8,4 @@ logs/
 *.tmp
 setup.lock
 setup-error.log
+setup-notification.log
