@@ -33,7 +33,7 @@ if (-not (Get-CimInstance Win32_Printer | Where-Object Name -eq $PrinterName)) {
 
 New-Item -ItemType Directory -Path $installDir -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $installDir 'logs') -Force | Out-Null
-foreach ($file in @('install.ps1','Print-G6030Maintenance.ps1','uninstall.ps1','config.json.sample','setting.txt')) {
+foreach ($file in @('install.ps1','Print-G6030Maintenance.ps1','uninstall.ps1','config.json.sample','setting.txt','Send-SetupNotification.ps1')) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination (Join-Path $installDir $file) -Force
 }
 $taskUser = [Security.Principal.WindowsIdentity]::GetCurrent().Name
@@ -79,6 +79,7 @@ if (-not $SkipTaskRegistration) {
             & schtasks.exe /Create /TN $taskName /XML $taskXml /IT /F | Out-Host
         }
         if ($LASTEXITCODE -ne 0) { throw "タスク登録に失敗しました (schtasks exit $LASTEXITCODE)" }
+        & (Join-Path $PSScriptRoot 'Send-SetupNotification.ps1') -Message 'Task registered successfully.'
     } finally { Remove-Item -LiteralPath $taskXml -Force -ErrorAction SilentlyContinue; $password = $null }
 }
 

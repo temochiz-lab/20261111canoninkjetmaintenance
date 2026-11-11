@@ -31,7 +31,6 @@ try {
     exit 1
 } finally {
     if ($setupLock) {
-        try { & $notificationScript -Message 'Printer maintenance Exit.' }
-        finally { $setupLock.Dispose() }
+        $setupLock.Dispose()
     }
 }
