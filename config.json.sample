@@ -1,0 +1,12 @@
+{
+  "printerName": "Canon G6030 series",
+  "schedule": {
+    "type": "daily",
+    "time": "08:45"
+  },
+  "minimumIntervalDays": 1,
+  "wakeComputer": false,
+  "logRetentionDays": 365,
+  "paper": "A4",
+  "dryRun": false
+}

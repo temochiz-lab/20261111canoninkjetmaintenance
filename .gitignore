@@ -1,0 +1,8 @@
+# 個人設定・実行時に生成されるファイル
+setting.txt
+config.json
+state.json
+state.json.*
+maintenance.lock
+logs/
+*.tmp
