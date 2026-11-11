@@ -1,4 +1,6 @@
 ﻿#requires -version 5.1
+[CmdletBinding()]
+param([switch]$RunWhenLoggedOut)
 $ErrorActionPreference = 'Stop'
 $setupLock = $null
 $notificationScript = Join-Path $PSScriptRoot 'Send-SetupNotification.ps1'
@@ -24,6 +26,7 @@ try {
     } until ($valid)
 
     $arguments = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -IntervalDays {1} -ScheduleTime 08:45' -f $installScript, $intervalDays
+    if ($RunWhenLoggedOut) { $arguments += ' -RunWhenLoggedOut' }
     $process = Start-Process -FilePath "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -Verb RunAs -ArgumentList $arguments -Wait -PassThru -ErrorAction Stop
     if ($process.ExitCode -ne 0) { throw ('設定処理が終了コード {0} で終了しました。' -f $process.ExitCode) }
 } catch {
