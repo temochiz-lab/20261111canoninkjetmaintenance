@@ -6,3 +6,4 @@ state.json.*
 maintenance.lock
 logs/
 *.tmp
+setup.lock
