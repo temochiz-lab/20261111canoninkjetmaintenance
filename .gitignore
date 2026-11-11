@@ -7,3 +7,4 @@ maintenance.lock
 logs/
 *.tmp
 setup.lock
+setup-error.log

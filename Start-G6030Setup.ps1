@@ -12,9 +12,9 @@ try {
         exit 0
     }
     & $notificationScript -Message 'Printer maintenance Start.'
-    $installScript = Join-Path $PSScriptRoot 'install.ps1'
+    $installScript = Join-Path $PSScriptRoot 'Invoke-G6030Setup.ps1'
     if (-not (Test-Path -LiteralPath $installScript)) {
-        throw '同じフォルダーに install.ps1 が見つかりません。'
+        throw '同じフォルダーに Invoke-G6030Setup.ps1 が見つかりません。'
     }
     do {
         $inputDays = Read-Host '何日ごとに印刷しますか？ (既定: 7)'
@@ -27,8 +27,13 @@ try {
 
     $arguments = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -IntervalDays {1} -ScheduleTime 08:45' -f $installScript, $intervalDays
     if ($RunWhenLoggedOut) { $arguments += ' -RunWhenLoggedOut' }
+    [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'setup-error.log'), '', (New-Object Text.UTF8Encoding($true)))
     $process = Start-Process -FilePath "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -Verb RunAs -ArgumentList $arguments -Wait -PassThru -ErrorAction Stop
-    if ($process.ExitCode -ne 0) { throw ('設定処理が終了コード {0} で終了しました。' -f $process.ExitCode) }
+    if ($process.ExitCode -ne 0) {
+        $errorPath = Join-Path $PSScriptRoot 'setup-error.log'
+        if (Test-Path -LiteralPath $errorPath) { Write-Host (Get-Content -LiteralPath $errorPath -Raw -Encoding UTF8) }
+        throw ('設定処理が終了コード {0} で終了しました。' -f $process.ExitCode)
+    }
 } catch {
     Write-Host $_.Exception.Message
     exit 1
