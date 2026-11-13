@@ -86,7 +86,6 @@ try {
         exit 0
     }
 
-    Send-MaintenanceNotification -Message 'Printer maintenance Start.'
     $printerName = [string]$config.printerName
     Write-MaintenanceLog 'INFO' ('START printer="{0}"' -f (Escape-LogValue $printerName))
 
@@ -191,8 +190,7 @@ try {
     $script:ExitCode = 1
 } finally {
     if ($lockStream) {
-        try { Send-MaintenanceNotification -Message 'Printer maintenance Exit.' }
-        finally { $lockStream.Dispose() }
+        $lockStream.Dispose()
     }
     try {
         if (Test-Path -LiteralPath $logPath) {
